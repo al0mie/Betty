@@ -88,4 +88,26 @@ class BettingService
         return $this->db->insert('INSERT INTO bettings (origin_guid, game_id, status, start, end, amount, created_at, updated_at)
           VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [$data['player_id'], $data['game_id'], self::STATUS_OFFERED, $gameStart, $gameStart + 10 * 60, $data['amount'], time(), time()]);
     }
+
+    /**
+     * Find offered game
+     *
+     * @param $data
+     * @return mixed
+     */
+    public function findBetToAccept($data)
+    {
+        return $this->db->findOne('SELECT * FROM bettings WHERE game_id = ? AND amount = ? AND status = 1 AND origin_guid <> ? AND status <> ?', [$data['game_id'], $data['amount'], $data['player_id'], self::STATUS_FINISHED]);
+    }
+
+    /**
+     * Find bet for required game
+     *
+     * @param $gameId
+     * @return mixed
+     */
+    public function findBetFromGame($gameId)
+    {
+        return $this->db->findOne('SELECT * FROM bettings WHERE game_id = ?', [$gameId]);
+    }
 }
