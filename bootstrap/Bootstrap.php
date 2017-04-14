@@ -4,6 +4,8 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 require_once __DIR__ . '/Router.php';
 
+$container = \DI\ContainerBuilder::buildDevContainer();
+
 $uri = Router::makeUri();
 
 // Check uri and compare with routes
@@ -15,7 +17,7 @@ if ($params = Router::matchUri($uri)) {
 
     if (class_exists($controller)) {
         if (method_exists($controller, $method)) {
-            $controller = new $controller();
+            $controller = $container->get($controller);
             $controller->$method($params);
         } else {
             throw new Exception('Bootstrap : No method found ' . $method);
