@@ -4,10 +4,12 @@
     "license": "MIT",
     "type": "project",
     "autoload": {
-        "classmap": ["app/"]
+        "classmap": [
+            "app/"
+        ]
     },
-    "require":{
-    	"php-di/php-di": "^5.4"
+    "require": {
+        "phpunit/phpunit": "6.1",
+        "php-di/php-di": "^5.4"
     }
-
 }
