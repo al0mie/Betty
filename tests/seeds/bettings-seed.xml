@@ -1,0 +1,4 @@
+<?xml version="1.0" ?>
+<dataset>
+    <bettings id="1" origin_guid="Alex" opponent_guid="Lina" game_id="2" status="12" start="321" end="12" amount="32" winner="1" origin_score="12" opponent_score="12" created_at="123" updated_at="123" />
+</dataset>
