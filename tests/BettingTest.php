@@ -85,4 +85,47 @@ class MyGuestbookTest extends TestCase
 
         $this->assertEquals(3, $this->getConnection()->getRowCount('bettings'), 'Assert new bet for a single game');
     }
+
+    public function testAcceptBetForSameGameBet()
+    {
+        $originUser = ['player_id' => 'user 1', 'amount' => 20, 'game_id' => 3];
+        $opponentUser = ['player_id' => 'user 2', 'amount' => 20, 'game_id' => 3];
+
+        $this->bettingService->createOrAcceptBet($originUser);
+        $this->bettingService->createOrAcceptBet($opponentUser);
+
+        $this->assertEquals(2, $this->getConnection()->getRowCount('bettings'), 'Assert accept bet for a single game');
+    }
+
+    public function testUpdateScore()
+    {
+        $originUser = ['player_id' => 'user 1', 'amount' => 20, 'game_id' => 3];
+        $opponentUser = ['player_id' => 'user 2', 'amount' => 20, 'game_id' => 3];
+
+        $betId = $this->bettingService->createBet($originUser);
+
+        $this->bettingService->acceptBet($opponentUser, $betId);
+
+        $scoreDataOriginPlayer = ['bet_id' => $betId, 'player_id' => $originUser['player_id'], 'score' => 100];
+        $scoreDataOpponentPlayer = ['bet_id' => $betId, 'player_id' => $opponentUser['player_id'], 'score' => 200];
+
+        $this->bettingService->updateScore($scoreDataOriginPlayer);
+
+        $acceptedBet = $this->bettingService->findBetById($betId);
+
+        /**
+         * Check after origin user update score
+         */
+        $this->assertEquals($acceptedBet->status, 3, 'Assert status');
+        $this->assertEquals($acceptedBet->origin_score, $scoreDataOriginPlayer['score'], 'Assert origin score');
+        $this->assertEquals($acceptedBet->opponent_score, 0, 'Assert opponent score');
+
+        /**
+         * Check after opponent update score
+         */
+        $this->bettingService->updateScore($scoreDataOpponentPlayer);
+        $acceptedBet = $this->bettingService->findBetById($betId);
+        $this->assertEquals($acceptedBet->opponent_score, $scoreDataOpponentPlayer['score'], 'Assert opponent score after update');
+        $this->assertEquals($acceptedBet->origin_score, $scoreDataOriginPlayer['score'], 'Assert opponent score');
+    }
 }
