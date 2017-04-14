@@ -110,4 +110,23 @@ class BettingService
     {
         return $this->db->findOne('SELECT * FROM bettings WHERE game_id = ?', [$gameId]);
     }
+
+    /**
+     * Check finished games
+     *
+     * @return int
+     */
+    public function finishGames()
+    {
+        return $this->db->update('UPDATE bettings SET status = ? WHERE end < ?', [self::STATUS_FINISHED, time()]);
+    }
+
+    /**
+     * @param $betId
+     * @return mixed
+     */
+    public function findBetById($betId)
+    {
+        return $this->db->findOne('SELECT * FROM bettings WHERE id = ?', [$betId]);
+    }
 }
