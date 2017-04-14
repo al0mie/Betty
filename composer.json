@@ -5,5 +5,9 @@
     "type": "project",
     "autoload": {
         "classmap": ["app/"]
+    },
+    "require":{
+    	"php-di/php-di": "^5.4"
     }
+
 }
