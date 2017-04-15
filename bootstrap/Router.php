@@ -7,17 +7,14 @@ class Router
 
     public static function makeUri()
     {
-        if(!empty($_SERVER['PATH_INFO']))
-        {
+        if(!empty($_SERVER['PATH_INFO'])) {
             self::$uri = $_SERVER['PATH_INFO'];
         }
-        elseif (!empty($_SERVER['REQUEST_URI']))
-        {
+        elseif (! empty($_SERVER['REQUEST_URI'])) {
             self::$uri = $_SERVER['REQUEST_URI'];
 
             //removing index
-            if (strpos(self::$uri, 'index.php') !== FALSE)
-            {
+            if (strpos(self::$uri, 'index.php') !== FALSE) {
                 self::$uri = str_replace(self::$uri, 'index.php', '');
             }
         }
@@ -29,32 +26,24 @@ class Router
     {
         require(__DIR__ . '/../routes/routes.php');
 
-        if (empty($routes))
-        {
-            \Error::throw_error('Routes must not be empty');
+        if (empty($routes)) {
+            throw new Exception('Routes must not be empty');
         }
 
         self::$routes = $routes;
 
         $params = array();
 
-        foreach ($routes as $route)
-        {
+        foreach ($routes as $route) {
             $route_uri = array_shift($route);
 
             $regex_uri = self::makeRegexUri($route_uri);
 
-            if (!preg_match($regex_uri, $uri, $match))
-            {
+            if (!preg_match($regex_uri, $uri, $match)) {
                 continue;
-            }
-            else
-            {
-                foreach ($match as $key => $value)
-                {
-                    if (is_int($key))
-                    {
-                        //removing preg_match digit keys
+            } else {
+                foreach ($match as $key => $value) {
+                    if (is_int($key)) {
                         continue;
                     }
 
@@ -62,10 +51,8 @@ class Router
                 }
 
                 //if no values are set, load default ones
-                foreach ($route as $key => $value)
-                {
-                    if (!isset($params[$key]))
-                    {
+                foreach ($route as $key => $value) {
+                    if (!isset($params[$key])) {
                         $params[$key] = $value;
                     }
                 }
@@ -82,8 +69,7 @@ class Router
         $reg_escape = '[.\\+*?[^\\]${}=!|]';
         $expression = preg_replace('#'.$reg_escape.'#', '\\\\$0', $uri);
 
-        if (strpos($expression, '(') !== FALSE)
-        {
+        if (strpos($expression, '(') !== FALSE) {
             $expression = str_replace(array('(', ')'), array('(?:', ')?'), $expression);
         }
 
