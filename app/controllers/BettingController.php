@@ -55,7 +55,7 @@ class BettingController extends Controller
             $this->bettingService->createOrAcceptBet($_POST);
             return $this->view('success');
         } else {
-            return $this->view('result');
+            return $this->view('error');
         }
     }
 
@@ -81,7 +81,7 @@ class BettingController extends Controller
      */
     protected function validateScore(array $data) : bool
     {
-        return isset($data['player_id']) && isset($data['score']) && is_int($data['score']) && isset($data['bet_id']) && is_int($data['bet_id']);
+        return isset($data['player_id']) && isset($data['score']) && is_numeric($data['score']) && isset($data['bet_id']) && is_numeric($data['bet_id']);
     }
 
     /**
@@ -92,6 +92,6 @@ class BettingController extends Controller
      */
     protected function validateBet(array $data) : bool
     {
-        return isset($data['player_id']) && isset($data['amount']) && is_int($data['amount']) && isset($data['game_id']) && is_int($data['game_id']);
+        return isset($data['player_id']) && isset($data['amount']) && is_numeric($data['amount']) && isset($data['game_id']) && is_numeric($data['game_id']);
     }
 }

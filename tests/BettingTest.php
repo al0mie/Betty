@@ -11,7 +11,7 @@ class BettingTest extends TestCase
     use TestCaseTrait;
 
     private $bettingService;
-    private $db;
+    private $bettingRepository;
 
     /**
      * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
@@ -19,10 +19,10 @@ class BettingTest extends TestCase
     public function getConnection()
     {
         $container = \DI\ContainerBuilder::buildDevContainer();
-        $this->db = $container->get('App\Repositories\BettingRepository');
+        $this->bettingRepository = $container->get('App\Repositories\BettingRepository');
         $this->bettingService =  $container->get('App\Services\BettingService');
 
-        $pdo = $this->db->getConnection();
+        $pdo = $this->bettingRepository->getConnection();
         return $this->createDefaultDBConnection($pdo);
     }
 
@@ -54,7 +54,7 @@ class BettingTest extends TestCase
 
         $this->bettingService->createBet($originUser);
 
-        $offeredBet = $this->bettingService->findBetToAccept($opponentUser);
+        $offeredBet = $this->bettingRepository->findBetToAccept($opponentUser);
 
         $this->assertEquals($offeredBet->origin_guid, $originUser['player_id'], 'Assert origin_guid');
         $this->assertEquals($offeredBet->opponent_guid, '', 'Assert opponent_guid');
@@ -67,9 +67,9 @@ class BettingTest extends TestCase
         $opponentUser = ['player_id' => 'user 2', 'amount' => 20, 'game_id' => 3];
 
         $betId = $this->bettingService->createBet($originUser);
-        $this->bettingService->acceptBet($opponentUser, $betId);
+        $this->bettingRepository->acceptBet($opponentUser, $betId);
 
-        $acceptedBet = $this->bettingService->findBetById($betId);
+        $acceptedBet = $this->bettingRepository->findBetById($betId);
 
         $this->assertEquals($acceptedBet->origin_guid, $originUser['player_id'], 'Assert origin_guid');
         $this->assertEquals($acceptedBet->opponent_guid, $opponentUser['player_id'], 'Assert opponent_guid');
@@ -105,14 +105,14 @@ class BettingTest extends TestCase
 
         $betId = $this->bettingService->createBet($originUser);
 
-        $this->bettingService->acceptBet($opponentUser, $betId);
+        $this->bettingRepository->acceptBet($opponentUser, $betId);
 
         $scoreDataOriginPlayer = ['bet_id' => $betId, 'player_id' => $originUser['player_id'], 'score' => 100];
         $scoreDataOpponentPlayer = ['bet_id' => $betId, 'player_id' => $opponentUser['player_id'], 'score' => 200];
 
         $this->bettingService->updateScore($scoreDataOriginPlayer);
 
-        $acceptedBet = $this->bettingService->findBetById($betId);
+        $acceptedBet = $this->bettingRepository->findBetById($betId);
 
         /**
          * Check after origin user update score
@@ -125,7 +125,7 @@ class BettingTest extends TestCase
          * Check after opponent update score
          */
         $this->bettingService->updateScore($scoreDataOpponentPlayer);
-        $acceptedBet = $this->bettingService->findBetById($betId);
+        $acceptedBet = $this->bettingRepository->findBetById($betId);
         $this->assertEquals($acceptedBet->opponent_score, $scoreDataOpponentPlayer['score'], 'Assert opponent score after update');
         $this->assertEquals($acceptedBet->origin_score, $scoreDataOriginPlayer['score'], 'Assert opponent score');
     }

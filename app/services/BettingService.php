@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Repositories\BettingRepository;
 use App\Repositories\Repository;
 
 class BettingService
@@ -9,23 +10,15 @@ class BettingService
     /**
      * @var Repository
      */
-    private $db;
-
-    /**
-     * Statuses for bets
-     */
-    const STATUS_OFFERED = 1;
-    const STATUS_ACCEPTED = 2;
-    const STATUS_MAKING_SCORE = 3;
-    const STATUS_FINISHED = 4;
+    private $bettingRepository;
 
     /**
      * BettingService constructor.
      * @param Repository $bettingRepository
      */
-    public function __construct(Repository $bettingRepository)
+    public function __construct(BettingRepository $bettingRepository)
     {
-        $this->db = $bettingRepository;
+        $this->bettingRepository = $bettingRepository;
     }
 
     /**
@@ -35,42 +28,29 @@ class BettingService
      */
     public function updateScore($data)
     {
-        $bet = $this->findBetById($data['bet_id']);
+        $bet = $this->bettingRepository->findBetById($data['bet_id']);
         if ($data['player_id'] == $bet->origin_guid) {
             $scoreColumn = 'origin_score';
         } else if ($data['player_id'] == $bet->opponent_guid) {
             $scoreColumn = 'opponent_score';
         } else return;
 
-        $this->db->update("UPDATE bettings SET {$scoreColumn}  = ?, status = ? WHERE id = ? AND (origin_guid = ? OR opponent_guid = ?) AND status <> ?", [$data['score'], self::STATUS_MAKING_SCORE, $data['bet_id'], $data['player_id'], $data['player_id'], self::STATUS_FINISHED]);
+        $this->bettingRepository->updateScore($data, $scoreColumn);
     }
 
     /**
-     * Check if 
-     * 
+     * Check if
+     *
      * @param $data
      */
-    public function createOrAcceptBet($data) {
-        
-        $offeredBet = $this->findBetToAccept($data);
+    public function createOrAcceptBet($data)
+    {
+        $offeredBet = $this->bettingRepository->findBetToAccept($data);
         if ($offeredBet) {
-            $this->acceptBet($data, $offeredBet->id);
-
+            $this->bettingRepository->acceptBet($data, $offeredBet->id);
         } else {
             $this->createBet($data);
         }
-    }
-
-    /**
-     * Accept game for opponent player
-     *
-     * @param $data
-     * @param $betId
-     * @return int
-     */
-    public function acceptBet($data, $betId)
-    {
-        return $this->db->update('UPDATE bettings SET status = ?, opponent_guid = ?, updated_at = ? WHERE id = ? AND status <> ?', [self::STATUS_ACCEPTED, $data['player_id'], time(), $betId, self::STATUS_FINISHED]);
     }
 
     /**
@@ -81,34 +61,11 @@ class BettingService
      */
     public function createBet($data)
     {
-        $bet = $this->findBetFromGame($data['game_id']);
+        $bet = $this->bettingRepository->findBetFromGame($data['game_id']);
 
         $gameStart = $bet ? $bet->start : time();
 
-        return $this->db->insert('INSERT INTO bettings (origin_guid, game_id, status, start, end, amount, created_at, updated_at)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?)', [$data['player_id'], $data['game_id'], self::STATUS_OFFERED, $gameStart, $gameStart + 10 * 60, $data['amount'], time(), time()]);
-    }
-
-    /**
-     * Find offered game
-     *
-     * @param $data
-     * @return mixed
-     */
-    public function findBetToAccept($data)
-    {
-        return $this->db->findOne('SELECT * FROM bettings WHERE game_id = ? AND amount = ? AND status = 1 AND origin_guid <> ? AND status <> ?', [$data['game_id'], $data['amount'], $data['player_id'], self::STATUS_FINISHED]);
-    }
-
-    /**
-     * Find bet for required game
-     *
-     * @param $gameId
-     * @return mixed
-     */
-    public function findBetFromGame($gameId)
-    {
-        return $this->db->findOne('SELECT * FROM bettings WHERE game_id = ?', [$gameId]);
+        return $this->bettingRepository->createBet($data, $gameStart);
     }
 
     /**
@@ -118,20 +75,6 @@ class BettingService
      */
     public function finishGames()
     {
-        return $this->db->update('UPDATE bettings set winner = (case 
-                                                  when origin_score > opponent_score then 1 
-                                                  when opponent_score > origin_score then -1 
-                                                  else 0 end),
-                                                  status = ?
-                                  WHERE end < ?', [self::STATUS_FINISHED, time()]);
-    }
-
-    /**
-     * @param $betId
-     * @return mixed
-     */
-    public function findBetById($betId)
-    {
-        return $this->db->findOne('SELECT * FROM bettings WHERE id = ?', [$betId]);
+        $this->bettingRepository->finishGames();
     }
 }
