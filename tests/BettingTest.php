@@ -6,7 +6,7 @@ use PHPUnit\DbUnit\TestCaseTrait;
 use App\Services\BettingService;
 use App\Repositories\BettingRepository;
 
-class MyGuestbookTest extends TestCase
+class BettingTest extends TestCase
 {
     use TestCaseTrait;
 
@@ -18,8 +18,9 @@ class MyGuestbookTest extends TestCase
      */
     public function getConnection()
     {
-        $this->db = new BettingRepository();
-        $this->bettingService = new BettingService($this->db);
+        $container = \DI\ContainerBuilder::buildDevContainer();
+        $this->db = $container->get('App\Repositories\BettingRepository');
+        $this->bettingService =  $container->get('App\Services\BettingService');
 
         $pdo = $this->db->getConnection();
         return $this->createDefaultDBConnection($pdo);
@@ -35,7 +36,7 @@ class MyGuestbookTest extends TestCase
 
     public function testCreateBet()
     {
-        $this->assertEquals(1, $this->getConnection()->getRowCount('bettings'), "Pre-Condition");
+        $this->assertEquals(1, $this->getConnection()->getRowCount('bettings'), 'Pre-Condition');
         $this->bettingService->createBet(['player_id' => 'user 1', 'amount' => 20, 'game_id' => 1]);
         $this->assertEquals(2, $this->getConnection()->getRowCount('bettings'), "After insert");
     }
@@ -43,7 +44,7 @@ class MyGuestbookTest extends TestCase
     public function testCreateNotValidBet()
     {
         $this->bettingService->createBet(['player_id' => 'user 1', 'amount' => 20, 'game_id' => 1]);
-        $this->assertEquals(2, $this->getConnection()->getRowCount('bettings'), "After insert");
+        $this->assertEquals(2, $this->getConnection()->getRowCount('bettings'), 'After insert');
     }
 
     public function testFindBetToAccept()

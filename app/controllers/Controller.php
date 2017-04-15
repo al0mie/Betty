@@ -13,7 +13,7 @@ class Controller
      *
      * @var string
      */
-    protected $namespace = '../resources/views/';
+    protected $namespace = __DIR__ . '/../../resources/views/';
 
     /**
      * Return required view
