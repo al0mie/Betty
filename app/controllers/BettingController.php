@@ -50,7 +50,13 @@ class BettingController extends Controller
      */
     public function processGame()
     {
-        $this->bettingService->createOrAcceptBet($_POST);
+        $data = $_POST;
+        if ($this->validateBet($data)) {
+            $this->bettingService->createOrAcceptBet($_POST);
+            return $this->view('success');
+        } else {
+            return $this->view('result');
+        }
     }
 
     /**
@@ -58,6 +64,34 @@ class BettingController extends Controller
      */
     public function updateScore()
     {
-        $this->bettingService->updateScore($_POST);
+        $data = $_POST;
+        if ($this->validateScore($data)) {
+            $this->bettingService->updateScore($_POST);
+            return $this->view('success');
+        } else {
+            return $this->view('error');
+        }
+    }
+
+    /**
+     * Validata data from score form update
+     *
+     * @param $data
+     * @return bool
+     */
+    protected function validateScore(array $data) : bool
+    {
+        return isset($data['player_id']) && isset($data['score']) && is_int($data['score']) && isset($data['bet_id']) && is_int($data['bet_id']);
+    }
+
+    /**
+     * Validate data from bet form
+     *
+     * @param array $data
+     * @return bool
+     */
+    protected function validateBet(array $data) : bool
+    {
+        return isset($data['player_id']) && isset($data['amount']) && is_int($data['amount']) && isset($data['game_id']) && is_int($data['game_id']);
     }
 }

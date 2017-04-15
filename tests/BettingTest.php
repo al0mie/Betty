@@ -4,7 +4,7 @@ use PHPUnit\Framework\TestCase;
 use PHPUnit\DbUnit\TestCaseTrait;
 
 use App\Services\BettingService;
-use App\Repositories\BettingRepository;
+use App\Repositories\Repository;
 
 class BettingTest extends TestCase
 {

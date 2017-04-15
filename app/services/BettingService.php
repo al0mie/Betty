@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use App\Repositories\BettingRepository;
+use App\Repositories\Repository;
 
 class BettingService
 {
     /**
-     * @var BettingRepository
+     * @var Repository
      */
     private $db;
 
@@ -21,9 +21,9 @@ class BettingService
 
     /**
      * BettingService constructor.
-     * @param BettingRepository $bettingRepository
+     * @param Repository $bettingRepository
      */
-    public function __construct(BettingRepository $bettingRepository)
+    public function __construct(Repository $bettingRepository)
     {
         $this->db = $bettingRepository;
     }
@@ -53,9 +53,9 @@ class BettingService
     public function createOrAcceptBet($data) {
         
         $offeredBet = $this->findBetToAccept($data);
-
         if ($offeredBet) {
             $this->acceptBet($data, $offeredBet->id);
+
         } else {
             $this->createBet($data);
         }

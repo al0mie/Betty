@@ -7,10 +7,10 @@ class Router
 
     public static function makeUri()
     {
-        if(!empty($_SERVER['PATH_INFO'])) {
+        if (!empty($_SERVER['PATH_INFO'])) {
             self::$uri = $_SERVER['PATH_INFO'];
         }
-        elseif (! empty($_SERVER['REQUEST_URI'])) {
+        elseif (!empty($_SERVER['REQUEST_URI'])) {
             self::$uri = $_SERVER['REQUEST_URI'];
 
             //removing index
