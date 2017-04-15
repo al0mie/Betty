@@ -21,7 +21,6 @@ class BettingTest extends TestCase
         $container = \DI\ContainerBuilder::buildDevContainer();
         $this->bettingRepository = $container->get('App\Repositories\BettingRepository');
         $this->bettingService =  $container->get('App\Services\BettingService');
-
         $pdo = $this->bettingRepository->getConnection();
         return $this->createDefaultDBConnection($pdo);
     }
@@ -76,6 +75,8 @@ class BettingTest extends TestCase
         $this->assertEquals($acceptedBet->status, 2, 'Assert status');
     }
 
+
+
     public function testCreateNewBetForSameGameBet()
     {
         $originUser = ['player_id' => 'user 1', 'amount' => 20, 'game_id' => 3];
@@ -97,7 +98,7 @@ class BettingTest extends TestCase
 
         $this->assertEquals(2, $this->getConnection()->getRowCount('bettings'), 'Assert accept bet for a single game');
     }
-
+    
     public function testUpdateScore()
     {
         $originUser = ['player_id' => 'user 1', 'amount' => 20, 'game_id' => 3];
@@ -129,4 +130,12 @@ class BettingTest extends TestCase
         $this->assertEquals($acceptedBet->opponent_score, $scoreDataOpponentPlayer['score'], 'Assert opponent score after update');
         $this->assertEquals($acceptedBet->origin_score, $scoreDataOriginPlayer['score'], 'Assert opponent score');
     }
+
+    /**
+     * Clean up db
+     */
+    protected function TearDown() {
+        $this->bettingRepository->executeQuery('TRUNCATE bettings');
+    }
+
 }

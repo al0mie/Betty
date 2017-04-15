@@ -14,7 +14,7 @@ class BettingService
 
     /**
      * BettingService constructor.
-     * @param Repository $bettingRepository
+     * @param BettingRepository $bettingRepository
      */
     public function __construct(BettingRepository $bettingRepository)
     {
