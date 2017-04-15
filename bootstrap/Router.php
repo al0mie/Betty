@@ -27,7 +27,7 @@ class Router
 
     public static function matchUri($uri)
     {
-        require('../routes/routes.php');
+        require(__DIR__ . '/../routes/routes.php');
 
         if (empty($routes))
         {

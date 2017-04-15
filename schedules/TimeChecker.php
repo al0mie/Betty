@@ -1,10 +1,9 @@
 <?php
 
-require_once  __DIR__. '/../vendor/autoload.php';
+require_once  __DIR__. '/../bootstrap/Bootstrap.php';
 
-use App\Services\BettingsService;
+use App\Services\BettingService;
 
-$bs = new BettingsService();
-
+$bs = $container->get('BettingService');
 $bs->finishGames();
 

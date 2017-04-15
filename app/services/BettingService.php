@@ -118,7 +118,12 @@ class BettingService
      */
     public function finishGames()
     {
-        return $this->db->update('UPDATE bettings SET status = ? WHERE end < ?', [self::STATUS_FINISHED, time()]);
+        return $this->db->update('UPDATE bettings set winner = (case 
+                                                  when origin_score > opponent_score then 1 
+                                                  when opponent_score > origin_score then -1 
+                                                  else 0 end),
+                                                  status = ?
+                                  WHERE end < ?', [self::STATUS_FINISHED, time()]);
     }
 
     /**
