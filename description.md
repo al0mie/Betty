@@ -19,7 +19,8 @@ CREATE TABLE `bettings` (
 ```
 This is a solution for implementing betting game. Since required technologies was not defined, for development was used php language without any frameworks or libraries because it could be overheavy, so implement a custom architecture. Except phpunit for unit tests and php-di for injecting modules;
 
-About structure of the project
+About structure of the project:
+
 app - contains all logic of project. There you can find controllers, services, repositories. For connection to databases was used pdo layer and written some interface for him for convenient using.
 
 bootstrap - There is start of the project and contains some methods for processing routes and exceptions.
@@ -36,7 +37,7 @@ tests - contains unit tests.
 
 web - root of the application.
 
-After installing required install dependencies via composer 
+After cloning repository it required install dependencies via composer
 
 ``` composer install  ```
 
@@ -45,7 +46,7 @@ For running tests
 ```vendor/bin/phpunit```
 
 
-For implementing pereodical script to check finish of game was written script and automate execution via cron job. I guess using demon processes or external tools could be problematic.
+For implementing periodic script to check finish of game was written script and automate execution via cron job. I guess using demon processes or external tools could be problematic.
 The script is located in the schedule folder in the root.
 To setup cron job in linux server you need open cronjob file (you can run command crontab -e to open him) and write period execution (I guess 1 minute will be fine to avoid leak intervals), path to php and path to script. Example:
 
