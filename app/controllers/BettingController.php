@@ -66,8 +66,11 @@ class BettingController extends Controller
     {
         $data = $_POST;
         if ($this->validateScore($data)) {
-            $this->bettingService->updateScore($_POST);
-            return $this->view('success');
+            if ($this->bettingService->updateScore($_POST)) {
+                return $this->view('success');
+            } else {
+                return $this->view('error');
+            }
         } else {
             return $this->view('error');
         }

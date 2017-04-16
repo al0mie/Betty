@@ -1,7 +1,7 @@
 <?php
 
-$routes[''] = [
-    '',
+$routes['index'] = [
+    'index',
     'controller' => 'Betting',
     'method' => 'index',
 ];

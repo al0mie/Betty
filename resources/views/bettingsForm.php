@@ -5,7 +5,7 @@
     <title>Bet form</title>
 </head>
 <body>
-    <form action="/processGame" method="POST">
+    <form action="processGame" method="POST">
         <h1>Start or Accept</h1>
 
         <label for="player_id">Player id</label>
@@ -19,6 +19,6 @@
 
         <input type="submit" value="Submit"/>
     </form>
-    <a href="/showScore"> Go to score form</a>
+    <a href="showScore"> Go to score form</a>
 </body>
 </html>

@@ -6,7 +6,7 @@
 </head>
 <body>
 
-<form action="/updateScore" method="POST">
+<form action="updateScore" method="POST">
     <h1>Update score</h1>
 
     <label for="player_id">Player id</label>
@@ -24,6 +24,6 @@
     <input type="submit" value="Submit"/>
 </form>
 
-<a href="/"> Got to bet form</a>
+<a href="./"> Got to bet form</a>
 </body>
 </html>

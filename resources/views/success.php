@@ -6,7 +6,7 @@
 </head>
 <body>
 Success. <br>
-<a href="/"> Got to bet form</a><br>
-<a href="/showScore"> Go to score form</a>
+<a href="index"> Got to bet form</a><br>
+<a href="showScore"> Go to score form</a>
 </body>
 </html>

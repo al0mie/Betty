@@ -29,13 +29,16 @@ class BettingService
     public function updateScore($data)
     {
         $bet = $this->bettingRepository->findBetById($data['bet_id']);
+        if (!$bet) {
+            return false;
+        }
         if ($data['player_id'] == $bet->origin_guid) {
             $scoreColumn = 'origin_score';
         } else if ($data['player_id'] == $bet->opponent_guid) {
             $scoreColumn = 'opponent_score';
-        } else return;
+        } else return false;
 
-        $this->bettingRepository->updateScore($data, $scoreColumn);
+        return $this->bettingRepository->updateScore($data, $scoreColumn);
     }
 
     /**
