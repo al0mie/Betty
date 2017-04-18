@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Services\BettingService;
+use App\Validators\BettingValidator;
 
 /**
  * Class BettingController
@@ -51,8 +52,8 @@ class BettingController extends Controller
     public function processGame()
     {
         $data = $_POST;
-        if ($this->validateBet($data)) {
-            $this->bettingService->createOrAcceptBet($_POST);
+        if (BettingValidator::validateBet($data)) {
+            $this->bettingService->createOrAcceptBet($data);
             return $this->view('success');
         } else {
             return $this->view('error');
@@ -65,8 +66,8 @@ class BettingController extends Controller
     public function updateScore()
     {
         $data = $_POST;
-        if ($this->validateScore($data)) {
-            if ($this->bettingService->updateScore($_POST)) {
+        if (BettingValidator::validateScore($data)) {
+            if ($this->bettingService->updateScore($data)) {
                 return $this->view('success');
             } else {
                 return $this->view('error');
@@ -76,25 +77,5 @@ class BettingController extends Controller
         }
     }
 
-    /**
-     * Validata data from score form update
-     *
-     * @param $data
-     * @return bool
-     */
-    protected function validateScore(array $data) : bool
-    {
-        return isset($data['player_id']) && isset($data['score']) && is_numeric($data['score']) && isset($data['bet_id']) && is_numeric($data['bet_id']);
-    }
-
-    /**
-     * Validate data from bet form
-     *
-     * @param array $data
-     * @return bool
-     */
-    protected function validateBet(array $data) : bool
-    {
-        return isset($data['player_id']) && isset($data['amount']) && is_numeric($data['amount']) && isset($data['game_id']) && is_numeric($data['game_id']);
-    }
+ 
 }

@@ -6,7 +6,7 @@ namespace App\Repositories;
  * Class BettingRepository
  * @package App\Repositories
  */
-class Repository
+abstract class Repository
 {
     /**
      * @var \PDO

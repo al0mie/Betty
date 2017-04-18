@@ -25,6 +25,7 @@ class BettingService
      * Update score for required bet
      *
      * @param $data
+     * @return bool|int
      */
     public function updateScore($data)
     {

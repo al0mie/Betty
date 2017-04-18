@@ -12,10 +12,10 @@
         <input type="text" id="player_id" name="player_id" required/>
 
         <label for="game_id">Game id</label>
-        <input type="text" id="game_id" name="game_id" required/>
+        <input type="number" min="0" id="game_id" name="game_id" required/>
 
         <label for="amount">Amount</label>
-        <input type="number" id="amount" name="amount" required/>
+        <input type="number" min="0" id="amount" name="amount" required/>
 
         <input type="submit" value="Submit"/>
     </form>

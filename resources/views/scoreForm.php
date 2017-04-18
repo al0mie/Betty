@@ -14,11 +14,11 @@
     <br>
 
     <label for="bet_id">Bet id</label>
-    <input type="text" id="bet_id" name="bet_id"/>
+    <input type="text" min="0" id="bet_id" name="bet_id"/>
     <br>
 
     <label for="score">Score</label>
-    <input type="number" id="score" name="score"/>
+    <input type="number" min="0" id="score" name="score"/>
     <br>
 
     <input type="submit" value="Submit"/>
